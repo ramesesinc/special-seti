@@ -29,6 +29,9 @@ public class FormReportModel extends ReportModel {
     @Binding
     def binding;
     
+    @Invoker
+    def invoker;
+    
     @Service("FormReportService")
     def reportService;
         

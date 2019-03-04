@@ -100,11 +100,37 @@ public abstract class AbstractCrudModel  {
     }
     
     public def getPersistenceService() {
-        return persistenceSvc;
+        String conn = getConnection();
+        if( conn!=null && conn.trim().length() > 0 ) {
+            return InvokerProxy.instance.create("PersistenceService", null, conn );
+        }
+        else {
+            return persistenceSvc;
+        }
     }
     
     public def getQueryService() {
-        return qryService;
+        String conn = getConnection();
+        if( conn!=null && conn.trim().length() > 0 ) {
+            return InvokerProxy.instance.create("QueryService", null, conn );
+        }
+        else {
+            return qryService;
+        }
+    }
+    
+    private String _connection;
+    
+    public String getConnection() {
+        if( _connection !=null && _connection.trim().length() > 0 ) return _connection;
+        if( workunit.workunit.module.properties.connection ) {
+            _connection = workunit.workunit.module.properties.connection;
+        }
+        return _connection;
+    }
+    
+    public void setConnection(String c) {
+        _connection = c;
     }
     
     @FormTitle

@@ -13,9 +13,22 @@ import com.rameses.seti2.models.*;
 
 public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListModel {
     
-    @Service("WorkflowTaskListService")
-    def wfTaskListService;
+    def _wfTaskListService;
+
+    public def getWfTaskListService() {
+        if( _wfTaskListService == null ) {
+            String conn = getConnection();
+            if( conn !=null && conn.trim().length() > 0  ) {
+                _wfTaskListService = InvokerProxy.instance.create("WorkflowTaskListService", null, conn );
+            }
+            else {
+                _wfTaskListService = InvokerProxy.instance.create("WorkflowTaskListService");                
+            }
+        }
+        return _wfTaskListService;
+    }
     
+    /*
     @Script('TaskNotifier')
     def _taskNotifier;
     
@@ -23,6 +36,7 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
         if( workunit.info.workunit_properties.allowNotify == 'false' ) return null;
         return _taskNotifier;
     }
+    */
     
     public def getQueryService() {
         return wfTaskListService;
@@ -32,22 +46,26 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
         return workunit.info.workunit_properties.processName;
     }
 
+    /*
     @Close
     void onclose() { 
         if(taskNotifier) taskNotifier.deactivate();
     } 
+    */
     
     public void init() {
         if( !getProcessName() ) 
             throw new Exception("Please indicate a processName");
 
         super.init();  
+        /*
         if(taskNotifier) {
             taskNotifier.activate(getProcessName(), {
                 nodeListHandler.repaint(); 
                 listHandler.reload();
             });
         }
+        */
     }
     
     public void beforeQuery( def m ) {
@@ -58,8 +76,10 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
         m.processname = getProcessName();
     }
     
+    /*
     def nodeListHandler = [
         fetchList: { 
+            MsgBox.alert("getNode list");
             if( taskNotifier ) {
                 return taskNotifier.getNodeList();    
             }
@@ -71,6 +91,6 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
             selectedNode = it; 
         }
     ] as ListPaneModel;    
-
+    */
     
 }
