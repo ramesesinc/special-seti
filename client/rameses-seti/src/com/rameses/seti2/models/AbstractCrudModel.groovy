@@ -422,6 +422,7 @@ public abstract class AbstractCrudModel  {
         return false;
     }
     
+    //hook example: business_application:form:reports
     def viewReport() {
         def op = new PopupMenuOpener();
         try {
@@ -429,20 +430,29 @@ public abstract class AbstractCrudModel  {
             //op.addAll( list1 );
             String _rptType = schemaName+":reports";
             if( getFormType() ) _rptType = schemaName+":" + getFormType() + ":reports";
+            
             def list = Inv.lookupOpeners(_rptType, [entity:entityContext]);
             list.each {
+                boolean _include = true;
                 if(it.properties.visibleWhen) {
                     try {
                         def vw = it.properties.visibleWhen;
                         boolean t = ExpressionResolver.getInstance().evalBoolean(vw, [entity:getEntityContext(), mode: mode ] );
-                        if(t == true) op.add( it );
+                        if(t != true) _include = false;
                     }
                     catch(ee) {
-                        System.out.println("Error in viewReport " + vw );
+                        System.out.println("Error in viewReport " + ee.getMessage() );
+                        return;
                     }
                 }
-                else {
-                    op.add( it );
+                if( _include ) {
+                    if( it.properties.id !=null  ) {
+                        def _id = it.properties.id;
+                        if(!op.items.find{ it.properties.id == _id } ) op.add( it );
+                    }
+                    else {
+                        op.add( it );
+                    }
                 }
             }
         } catch(Throwable ign){;}
