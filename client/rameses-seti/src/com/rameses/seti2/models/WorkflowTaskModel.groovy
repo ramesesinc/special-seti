@@ -67,7 +67,7 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
             }
         }
         
-        super.open();
+        super.open(false);
         if( entity.taskid ) tsk = [taskid: entity.taskid ];
         if( tsk?.taskid ) { 
             task = workflowTaskService.findTask( [processname: getProcessName(), taskid: tsk.taskid ] );
@@ -79,6 +79,7 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
                 }
             }
         } 
+        afterOpen();
         return null;
     }
     

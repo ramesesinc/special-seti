@@ -252,6 +252,11 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
     }
     
     def open() {
+        return open(true);
+    }
+
+    //I've added this for WorkflowTaskModel. The workflow task model should fire the afterOpen not this.
+    def open(boolean fireAfterOpen) {
         mode = "read";
         init();
         if( !entity ) entity = [:];
@@ -270,7 +275,7 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         findBy = null;  
         //we need to reset the schema name for update.
         entity._schemaname = schemaName;
-        afterOpen();
+        if(fireAfterOpen==true) afterOpen();
         if( pageExists("view")) return "view";
         return null;
     }
