@@ -26,6 +26,12 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         return workflowTaskSvc;
     }
     
+    def getExprParams() {
+        def m = super.getExprParams();
+        m.task = task;
+        return m;
+    }
+    
     /*** 
      * default behavior is it will reload the entity after signal.
      * If you do not want this behavior you must override afterSignal. 

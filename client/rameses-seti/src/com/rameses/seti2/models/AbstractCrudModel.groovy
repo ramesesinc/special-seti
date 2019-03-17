@@ -243,7 +243,7 @@ public abstract class AbstractCrudModel  {
             if (allowCreate == 'false') return false;
             if (allowCreate.startsWith('#{')){
                 try {
-                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowCreate, [entity:getEntityContext()] );
+                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowCreate, getExprParams() );
                     if(t == false) return false;
                 }
                 catch(ign){
@@ -284,7 +284,7 @@ public abstract class AbstractCrudModel  {
             if (allowOpen == 'false') return false;
             if (allowOpen.startsWith('#{')){
                 try {
-                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowOpen, [entity:getEntityContext()] );
+                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowOpen, getExprParams() );
                     if(t == false) return false;
                 } catch(ign){
                     println 'Expression Error: ' + allowOpen;
@@ -306,7 +306,7 @@ public abstract class AbstractCrudModel  {
             if (allowEdit == 'false') return false;
             if (allowEdit.startsWith('#{')){
                 try {
-                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowEdit, [entity:getEntityContext()] );
+                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowEdit, getExprParams() );
                     if(t == false) return false;
                 }
                 catch(ign){
@@ -329,7 +329,7 @@ public abstract class AbstractCrudModel  {
             if (allowDelete == 'false') return false;
             if (allowDelete.startsWith('#{')){
                 try {
-                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowDelete, [entity:getEntityContext()] );
+                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowDelete, getExprParams() );
                     if(t == false) return false;
                 }
                 catch(ign){
@@ -345,13 +345,17 @@ public abstract class AbstractCrudModel  {
         return secProvider.checkPermission( domain, role, deletePermission );
     }
     
+    def getExprParams() {
+        return [entity:getEntityContext(), context: this, mode: mode];
+    }
+    
     boolean isViewReportAllowed() { 
         def allowViewReport = workunit.info.workunit_properties.allowViewReport;  
         if( allowViewReport ) {
             if (allowViewReport == 'false') return false;
             if (allowViewReport.startsWith('#{')){
                 try {
-                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowViewReport, [entity:getEntityContext()] );
+                    boolean t = ExpressionResolver.getInstance().evalBoolean(allowViewReport, getExprParams() );
                     if(t == false) return false;
                 }
                 catch(ign){
@@ -385,7 +389,7 @@ public abstract class AbstractCrudModel  {
                 def vWhen = inv.properties.visibleWhen;
                 if(!vWhen) return true;  
                 try {
-                    return ExpressionResolver.getInstance().evalBoolean(vWhen, [entity:getEntityContext(), context: this, mode: mode] );
+                    return ExpressionResolver.getInstance().evalBoolean(vWhen, getExprParams() );
                 }
                 catch(ign){
                     println 'Expression Error: ' + vWhen;
@@ -437,7 +441,7 @@ public abstract class AbstractCrudModel  {
                 if(it.properties.visibleWhen) {
                     try {
                         def vw = it.properties.visibleWhen;
-                        boolean t = ExpressionResolver.getInstance().evalBoolean(vw, [entity:getEntityContext(), mode: mode ] );
+                        boolean t = ExpressionResolver.getInstance().evalBoolean(vw, getExprParams() );
                         if(t != true) _include = false;
                     }
                     catch(ee) {
