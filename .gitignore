@@ -22,3 +22,6 @@ Thumbs.db
 /client/rameses-seti/dist/
 /client/rameses-seti-support/dist/
 /client/rameses-seti-support/build/
+/server/rameses-seti-services/nbproject/private/
+/server/rameses-seti-services/dist/
+/server/rameses-seti-services/build/
