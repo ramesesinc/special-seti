@@ -22,7 +22,7 @@ public class SchemaListComponent extends ComponentBean  {
     @Service("PersistenceService")
     def _persistenceSvc;
     def getPersistenceService() {
-        if(!_peristenceSvc) {
+        if(!_persistenceSvc) {
             _persistenceSvc = InvokerProxy.getInstance().create("PersistenceService", null, connection);
         }
         return _persistenceSvc;

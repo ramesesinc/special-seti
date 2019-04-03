@@ -533,14 +533,16 @@ public class CrudListModel extends AbstractCrudModel {
     
     void refresh() {
         listHandler.reload();
+        reloadNodes();
     }
     
     void reload() {
         listHandler.reload();
+        reloadNodes();
     }
     
     void reloadNodes(){
-        nodeListHandler.reload();
+        if(nodeListHandler) nodeListHandler.reload();
     }
     
     def print() {
