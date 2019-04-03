@@ -6,6 +6,8 @@ package com.rameses.seti2.components;
 
 import com.rameses.common.MethodResolver;
 import com.rameses.common.PropertyResolver;
+import com.rameses.osiris2.client.InvokerProxy;
+import com.rameses.osiris2.client.WorkUnitUIController;
 import com.rameses.rcp.common.Column;
 import com.rameses.rcp.common.MsgBox;
 import com.rameses.rcp.control.XComponentPanel;
@@ -224,7 +226,10 @@ public class SchemaList extends XComponentPanel {
         if ( handlerName != null && handlerName.trim().length() > 0 ) {
             Object listModel = PropertyResolver.getInstance().getProperty(bean, "listModel");
             setProperty(getHandlerName(), listModel, getBean());
-        }       
+        } 
+        WorkUnitUIController wu = (WorkUnitUIController)bean.getCallerBinding().getController();
+        String conn = (String)wu.getWorkunit().getModule().getProperties().get("connection");
+        bean.setProperty("connection", conn); 
     } 
     
     public void setProperty( String name, Object value ) { 

@@ -17,14 +17,16 @@
 
         class WorkflowInfo {
         
-            @Service("WorkflowTaskService")
-            def workflowSvc;
-        
             @Caller
             def caller;
-        
+
             @FormTitle
             def formTitle = "Task History";
+        
+            public def getWorkflowSvc() {
+                String conn = caller.getConnection();
+                return InvokerProxy.instance.create("WorkflowTaskService", null, conn );
+            }
         
             def task;
         

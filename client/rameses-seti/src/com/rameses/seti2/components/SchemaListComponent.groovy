@@ -11,11 +11,22 @@ public class SchemaListComponent extends ComponentBean  {
     
     def ui; // set by the XComponentPanel
 
-    @Service("QueryService")
-    def queryService;
+    def _querySvc;
+    def getQueryService() {
+        if(!_querySvc) {
+            _querySvc= InvokerProxy.getInstance().create("QueryService", null, connection);
+        }
+        return _querySvc;
+    }
     
     @Service("PersistenceService")
-    def persistenceService;
+    def _persistenceSvc;
+    def getPersistenceService() {
+        if(!_persistenceSvc) {
+            _persistenceSvc = InvokerProxy.getInstance().create("PersistenceService", null, connection);
+        }
+        return _persistenceSvc;
+    }   
     
     String schemaName;
     String entityName;
@@ -25,6 +36,7 @@ public class SchemaListComponent extends ComponentBean  {
     String groupBy;
     String actionContext;
     String menuContext;
+    def connection;
 
     boolean allowCreate;
     boolean allowOpen;

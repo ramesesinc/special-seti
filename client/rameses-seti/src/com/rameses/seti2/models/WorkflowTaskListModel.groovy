@@ -72,8 +72,9 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
         m.processname = getProcessName();
     }
     
-    public beforeFetchNodes( def m ) {
+    public def beforeFetchNodes( def m ) {
         m.processname = getProcessName();
+        return null;
     }
     
     /*
