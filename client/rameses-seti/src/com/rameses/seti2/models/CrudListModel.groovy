@@ -79,6 +79,13 @@ public class CrudListModel extends AbstractCrudModel {
     public def beforeFetchNodes( def m ) {
         ;//do nothing
     }
+
+    // this is the columns definition for UI 
+    // override this if you want to set column properties 
+    // like width, minWidth, maxWidth, visible, etc....
+    public def getColumnDefs() { 
+        return null; 
+    }    
     
     public void initColumn( def c ) {
         //do nothing
