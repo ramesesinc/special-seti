@@ -38,7 +38,7 @@ public class FormReportModel extends ReportModel {
     int _captionWidth;
     
     String reportId;
-    def query = [:];
+    def _query = [:];
     def data;
     int status;
     Map headers;
@@ -49,14 +49,18 @@ public class FormReportModel extends ReportModel {
     def mode = "query";
     boolean aborted = false;
     
-    //this determins what was first clicked for the back button to decide
+    //this determines what was first clicked for the back button to decide
     //where it will go back to. if true = query, else _close;
     boolean queryView = false;
     
-    private static def scheduler = java.util.concurrent.Executors.newScheduledThreadPool(100);
+    private static def scheduler = java.util.concurrent.Executors.newScheduledThreadPool(5);
     
     public Map getParameters() {
         return headers;
+    }
+    
+    public def getQuery() {
+        return _query;
     }
     
     public String getTitle() {
@@ -151,7 +155,7 @@ public class FormReportModel extends ReportModel {
     boolean processReport() {
         mode = "processing";
         def m =  getConfInfo();
-        m.parameters = query;
+        m.parameters = getQuery();
         if(status) m.status = status;
         def newData = reportService.getData(m);
         //println newData;
@@ -195,7 +199,6 @@ public class FormReportModel extends ReportModel {
                     ReportUtil.print( report, true ); 
                     mode = "query";
                 }
-                
             }
         }
         if(binding==null) {
@@ -231,6 +234,8 @@ public class FormReportModel extends ReportModel {
         mode = "query";
         return mode;
     } 
+    
+   
 }
 
      

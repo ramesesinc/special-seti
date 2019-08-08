@@ -16,10 +16,11 @@
                  icon="images/toolbars/printer.png" visibleWhen="#{mode=='query'}"/>
 
         <invoker type="formActions" action="back" caption="Back" mnemonic="b"  
-         immediate="true" visibleWhen="#{mode=='preview' }"/>
+         immediate="true" visibleWhen="#{mode=='preview'  &amp;&amp; queryView == true }"/>
 
-        <invoker type="formActions" action="_close" caption="Close Preview" mnemonic="c"  
+        <invoker type="formActions" action="_close" caption="Close" mnemonic="c"  
          immediate="true" visibleWhen="#{mode=='preview'}"/>
+        
 
     </invokers>
     
