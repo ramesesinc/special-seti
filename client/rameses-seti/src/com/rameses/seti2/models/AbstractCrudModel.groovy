@@ -39,8 +39,13 @@ public abstract class AbstractCrudModel  {
     @Script("ListTypes")
     def listTypes;
     
-    @Script("Lov")
-    def lov;
+    def _lov;
+    public def getLov() {
+        if(_lov==null) {
+            _lov = new LovModel(getConnection());
+        }
+        return _lov;
+    }
     
     String role;
     String domain;
