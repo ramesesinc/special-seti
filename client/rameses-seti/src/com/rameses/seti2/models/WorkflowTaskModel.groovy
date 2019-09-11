@@ -11,10 +11,15 @@ import java.rmi.server.*;
 import com.rameses.util.*;
 import com.rameses.seti2.models.CrudFormModel;
 
+import com.rameses.client.notification.socketio.*;
+
 public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskListener {
     
     @Service("WorkflowTaskService")
     def workflowTaskSvc;
+    
+    @Service("WorkflowTaskNotificationService")
+    def workflowTaskNotificationSvc;
     
     def task;
     String processName;
@@ -86,16 +91,19 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
             }
         } 
         afterOpen();
+        registerNotification();
         return null;
     }
     
+    boolean refreshingScreen = false;
+
     public def signal( def transition ) {
         transition.processname = getProcessName();
         transition.taskid = task.taskid;
         transition.refid = task.refid;
-        def newTask = workflowTaskService.signal( transition );
-        if( newTask?.taskid ) {
-            task = newTask;
+        refreshingScreen = true;
+        task = workflowTaskService.signal( transition );
+        if( task.taskid ) {
             transitions.clear();
             if( task.transitions ) {
                 buildTransitionActions(task);
@@ -104,21 +112,25 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         else {
             task = [:];
         }
+        binding.refresh();
+        buildMessage();
+        refreshingScreen = false;
+        afterSignal(transition, task);
+        if( pageExists(task.state)) {
+            return task.state;
+        }
+        return "default";
         
+        /*
+        def newTask = workflowTaskService.signal( transition );
         //refresh the list
         try {
             if( hasCallerProperty('listHandler')) {
                 caller.listHandler.reload();
             }
         } catch(Throwable e){;}
-        
-        binding.refresh();
-        buildMessage();
-        afterSignal(transition, newTask);
-        if( pageExists(task.state)) {
-            return task.state;
-        }
-        return "default";
+        */
+       return null;
     }
     
     final void buildTransitionActions( def tsk ) {
@@ -129,11 +141,14 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
                 def m = [:];
                 m.processname = getProcessName();
                 m.taskid = task.taskid;
+                m.refid = task.refid;
+                refreshingScreen = true;
                 def res = workflowTaskService.assignToMe(m);
                 task.assignee = res.assignee;
                 task.startdate = res.startdate;
                 transitions.clear();
                 buildTransitionActions(task);
+                refreshingScreen = false;
             }
             transitions << new WorkflowAssignToMeAction( tsk, h );
         }
@@ -210,6 +225,28 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         def q = [domain: task.domain, role: task.role];
         Modal.show("sys_user_role:lookup", [query: q,  onselect: h ] );
     }
+    
+    
+    //we are now dependent on this routine.
+    def notifyHandler = [
+        onMessage: { msg ->
+            println msg;
+            if(!refreshingScreen) return;
+            if( msg.refid == entity.objid ) {
+                reload();
+            }
+        }
+    ] as DefaultNotificationHandler;
+
+    public void registerNotification() {
+        TaskNotificationClient.getInstance().register(getProcessName(), notifyHandler );
+    }
+    
+    @Close
+    void onClose() {
+        TaskNotificationClient.getInstance().unregister( notifyHandler );
+    }
+
 
 }
 

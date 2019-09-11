@@ -250,7 +250,7 @@ public class NodeListTemplate extends javax.swing.JPanel {
         jToolBar1.add(btnSelectColumn);
 
         btnRefresh.setCaption("");
-        btnRefresh.setName("refresh"); // NOI18N
+        btnRefresh.setName("reload"); // NOI18N
         btnRefresh.setAccelerator("ctrl R");
         btnRefresh.setAutoRefresh(false);
         btnRefresh.setFocusable(false);

@@ -228,6 +228,10 @@ public class CrudListModel extends AbstractCrudModel {
     } 
         
     public def buildSelectQuery(Map o) {
+        return buildSelectQuery(o, true);
+    }
+    
+    public def buildSelectQuery(Map o, boolean sincludeFields) {
         def m = [debug:debug];
         if(o) m.putAll(o);
         if(query) {
@@ -248,11 +252,12 @@ public class CrudListModel extends AbstractCrudModel {
         m._schemaname = schema.name;
         m.adapter = schema.adapter;
         
-        def primKeys = cols.findAll{it.primary==true && it.source==schema.name}*.name;
-        def arr = cols.findAll{ it.hidden=='true' || it.selected==true }*.name; 
-        
-        //build the columns to retrieve
-        m.select = (primKeys + arr).unique().join(",") ;
+        if( sincludeFields ) {
+            def primKeys = cols.findAll{it.primary==true && it.source==schema.name}*.name;
+            def arr = cols.findAll{ it.hidden=='true' || it.selected==true }*.name; 
+            //build the columns to retrieve
+            m.select = (primKeys + arr).unique().join(",") ;
+        }
 
         def s1 = [];
         def s2 = [:];
@@ -276,9 +281,11 @@ public class CrudListModel extends AbstractCrudModel {
         }
         if( getTag()!=null ) {
             m._tag = getTag();
-        }    
-        if( !ValueUtil.isEmpty(getOrderBy()) ) {
-            m.orderBy = getOrderBy();
+        }  
+        if(sincludeFields ) {
+            if( !ValueUtil.isEmpty(getOrderBy()) ) {
+                m.orderBy = getOrderBy();
+            }
         }
         beforeQuery( m );
         return m;
@@ -401,8 +408,7 @@ public class CrudListModel extends AbstractCrudModel {
         }
     ] as PageListModel;
    
-    
-    void search() {
+    void buildSearchFilter() {
         orWhereList.clear();
         listHandler.searchtext = searchText;
         if( searchText ) {
@@ -414,7 +420,12 @@ public class CrudListModel extends AbstractCrudModel {
                 orWhereList << [ it + " like :searchtext", [ searchtext: st ]]; 
             } 
         } 
-        listHandler.doSearch();
+    }
+    
+    void search() {
+        buildSearchFilter();
+        boolean hasNodes = reloadNodes();
+        if(!hasNodes) listHandler.doSearch();
     }
     
     //returns the where element
@@ -450,7 +461,8 @@ public class CrudListModel extends AbstractCrudModel {
                 filterText = null;
             }
             //we call doSearch to set the start at 0
-            listHandler.doSearch(); 
+            boolean hasNodes = reloadNodes();
+            if(!hasNodes) listHandler.doSearch();
             binding.refresh('filterText')
         }
         return Inv.lookupOpener( "crud:showcriteria", [cols: cols, handler:h, criteriaList: criteriaList] );
@@ -535,21 +547,30 @@ public class CrudListModel extends AbstractCrudModel {
             m.put( it.name, selectedItem.get(it.name));
         }
         getPersistenceService().removeEntity( m );
-        listHandler.reload();
+        boolean hasNodes = reloadNodes();
+        if(!hasNodes) listHandler.reload();
     }
     
+    /*
     void refresh() {
-        listHandler.reload();
-        reloadNodes();
+        reload();
     }
+    */
     
     void reload() {
-        listHandler.reload();
-        reloadNodes();
+        boolean hasNodes = reloadNodes();
+        if(!hasNodes) {
+            listHandler.reload();
+        }
     }
     
-    void reloadNodes(){
-        if(nodeListHandler) nodeListHandler.reload();
+    //if returns true, do not reload the list.  
+    boolean reloadNodes(){
+        if(nodeListHandler) {
+            nodeListHandler.reload();
+        }
+        if(_nodeList) return true;
+        else return false;
     }
     
     def print() {
@@ -595,10 +616,20 @@ public class CrudListModel extends AbstractCrudModel {
     def getNodeList() {
         if(!_nodeList) {
             def m = [:];
+            m = buildSelectQuery( m, false );
+            /*
+            def m = [:];
             m._schemaname = schema.name;
             m.adapter = schema.adapter;   
             String _tag_ = getTag();
             if( _tag_ ) m._tag = _tag_;
+            buildSelectQuery(m);
+            m.remove("select");
+            m.remove("order")
+            def wf = buildWhereStatement();
+            if( wf[0] ) m.whereFilter = wf;
+            if(orWhereList) m.orWhereList = orWhereList;
+            */
             beforeFetchNodes( m );
             _nodeList = fetchNodeList( m );
         }
@@ -608,7 +639,7 @@ public class CrudListModel extends AbstractCrudModel {
     void setSelectedNode(def n) {
         _selectedNode = n;
         query.put("node", n);
-        search();
+        listHandler.doSearch();
     }
     
     def getSelectedNode() {

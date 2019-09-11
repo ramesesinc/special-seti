@@ -8,10 +8,16 @@ import com.rameses.rcp.framework.ClientContext;
 import com.rameses.common.*;
 import com.rameses.rcp.constant.*;
 import java.rmi.server.*;
+import java.util.concurrent.LinkedBlockingQueue
+
 import com.rameses.util.*;
 import com.rameses.seti2.models.*;
+import com.rameses.client.notification.socketio.*;
 
 public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListModel {
+    
+    @Service("WorkflowTaskNotificationService")
+    def workflowTaskNotificationSvc;
     
     def _wfTaskListService;
 
@@ -28,15 +34,6 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
         return _wfTaskListService;
     }
     
-    /*
-    @Script('TaskNotifier')
-    def _taskNotifier;
-    
-    public def getTaskNotifier() {
-        if( workunit.info.workunit_properties.allowNotify == 'false' ) return null;
-        return _taskNotifier;
-    }
-    */
     
     public def getQueryService() {
         return wfTaskListService;
@@ -46,26 +43,33 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
         return workunit.info.workunit_properties.processName;
     }
 
-    /*
-    @Close
-    void onclose() { 
-        if(taskNotifier) taskNotifier.deactivate();
-    } 
-    */
-    
     public void init() {
         if( !getProcessName() ) 
             throw new Exception("Please indicate a processName");
 
         super.init();  
-        /*
-        if(taskNotifier) {
-            taskNotifier.activate(getProcessName(), {
-                nodeListHandler.repaint(); 
-                listHandler.reload();
-            });
+        registerNotification();
+    }
+    
+    def atomicBoolean = new java.util.concurrent.atomic.AtomicBoolean(false);
+    def notifyHandler = [
+        onMessage: { msg ->
+            println "reloading workflow task list " + msg; 
+            if( atomicBoolean.compareAndSet(false, true)) {
+                reload();
+                binding.refresh();
+                atomicBoolean.set(false);
+            }
         }
-        */
+    ] as DefaultNotificationHandler;
+    
+    public void registerNotification() {
+        TaskNotificationClient.getInstance().register(getProcessName(), notifyHandler );
+    }
+    
+    @Close
+    void onClose() {
+        TaskNotificationClient.getInstance().unregister(notifyHandler );
     }
     
     public void beforeQuery( def m ) {
@@ -74,24 +78,10 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
     
     public def beforeFetchNodes( def m ) {
         m.processname = getProcessName();
+        m.uicontext = "tasklist";
+        m.domain = domain;
         return null;
     }
     
-    /*
-    def nodeListHandler = [
-        fetchList: { 
-            MsgBox.alert("getNode list");
-            if( taskNotifier ) {
-                return taskNotifier.getNodeList();    
-            }
-            else {
-                return WorkflowCache.getNodeList( getProcessName() );
-            }
-        },
-        onselect: { 
-            selectedNode = it; 
-        }
-    ] as ListPaneModel;    
-    */
     
 }
