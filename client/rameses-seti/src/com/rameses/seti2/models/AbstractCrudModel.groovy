@@ -128,7 +128,7 @@ public abstract class AbstractCrudModel  {
     
     public String getConnection() {
         if( _connection !=null && _connection.trim().length() > 0 ) return _connection;
-        if( workunit.workunit.module.properties.connection ) {
+        if( workunit?.workunit?.module?.properties?.connection ) {
             _connection = workunit.workunit.module.properties.connection;
         }
         return _connection;

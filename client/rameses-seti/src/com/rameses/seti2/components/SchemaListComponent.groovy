@@ -254,8 +254,22 @@ public class SchemaListComponent extends ComponentBean  {
         if(!allowDelete) return null;
         if(!selectedItem) throw new Exception("Please select an item to remove");
         if( !MsgBox.confirm("Are you sure you want to remove this item?")) return null;
-        selectedItem._schemaname = (entityName) ? entityName : schemaName ;
-        persistenceService.removeEntity( selectedItem );
+        
+        def sname = (entityName ? entityName : schemaName);
+        
+        def op = null; 
+        try {
+            op = Inv.lookupOpener(sname +':removeEntity', [entity: selectedItem]); 
+            op.target = "process"; 
+        } catch(Throwable t) {;}
+        
+        if ( op == null ) {
+            selectedItem._schemaname = (entityName) ? entityName : schemaName ;
+            persistenceService.removeEntity( selectedItem );
+        } 
+        else  { 
+            Inv.invoke( op ); 
+        } 
         listModel.reload();
     } 
     
