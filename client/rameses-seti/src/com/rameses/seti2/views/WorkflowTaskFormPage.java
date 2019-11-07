@@ -181,10 +181,10 @@ public class WorkflowTaskFormPage extends javax.swing.JPanel {
                     btnCancel1.setName("showMenu"); // NOI18N
                     jToolBar1.add(btnCancel1);
 
-                    xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0));
-                    xActionBar1.setDynamic(true);
                     xActionBar1.setFormName("formName");
                     xActionBar1.setName("formActions"); // NOI18N
+                    xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0));
+                    xActionBar1.setDynamic(true);
                     jToolBar1.add(xActionBar1);
 
                     btnPrint.setCaption("");
@@ -218,7 +218,7 @@ public class WorkflowTaskFormPage extends javax.swing.JPanel {
                     xSubFormPanel1.setLayout(xSubFormPanel1Layout);
                     xSubFormPanel1Layout.setHorizontalGroup(
                         xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 387, Short.MAX_VALUE)
+                        .addGap(0, 365, Short.MAX_VALUE)
                     );
                     xSubFormPanel1Layout.setVerticalGroup(
                         xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -227,8 +227,8 @@ public class WorkflowTaskFormPage extends javax.swing.JPanel {
 
                     jToolBar1.add(xSubFormPanel1);
 
-                    xActionBar2.setBorder(null);
                     xActionBar2.setName("navActions"); // NOI18N
+                    xActionBar2.setBorder(null);
                     xActionBar2.setOrientationHAlignment("RIGHT");
                     xActionBar2.setPreferredSize(new java.awt.Dimension(100, 29));
                     xActionBar2.setTextPosition("CENTER");

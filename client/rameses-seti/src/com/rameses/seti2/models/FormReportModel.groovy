@@ -80,6 +80,7 @@ public class FormReportModel extends ReportModel {
             throw new Exception("No available report data");
     }
     
+    
     public String getReportName() {
         String s = invoker.properties.reportName;
         if( s!=null ) {

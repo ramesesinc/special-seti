@@ -133,10 +133,10 @@ public class CrudFormPage extends javax.swing.JPanel {
         jToolBar1.setPreferredSize(new java.awt.Dimension(100, 30));
 
         btnCancel1.setCaption("");
-        btnCancel1.setName("showMenu"); // NOI18N
+        btnCancel1.setName("_close"); // NOI18N
         btnCancel1.setAutoRefresh(false);
         btnCancel1.setFocusable(false);
-        btnCancel1.setIconResource("images/menu.png");
+        btnCancel1.setIconResource("images/toolbars/cancel.png");
         btnCancel1.setImmediate(true);
         jToolBar1.add(btnCancel1);
 
