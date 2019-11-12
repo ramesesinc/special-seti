@@ -54,7 +54,6 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
     def atomicBoolean = new java.util.concurrent.atomic.AtomicBoolean(false);
     def notifyHandler = [
         onMessage: { msg ->
-            println "reloading workflow task list " + msg; 
             if( atomicBoolean.compareAndSet(false, true)) {
                 reload();
                 binding.refresh();
