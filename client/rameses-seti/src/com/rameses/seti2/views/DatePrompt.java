@@ -65,7 +65,7 @@ public class DatePrompt extends javax.swing.JPanel {
         xComboBox1.setItems("hourList");
         xComboBox1.setName("hour"); // NOI18N
         xComboBox1.setFontStyle("font-size:18;");
-        xComboBox1.setPreferredSize(new java.awt.Dimension(60, 40));
+        xComboBox1.setPreferredSize(new java.awt.Dimension(100, 40));
         xComboBox1.setShowCaption(false);
         xFormPanel2.add(xComboBox1);
 
@@ -73,7 +73,7 @@ public class DatePrompt extends javax.swing.JPanel {
         xComboBox2.setName("min"); // NOI18N
         xComboBox2.setCellPadding(new java.awt.Insets(0, 5, 0, 0));
         xComboBox2.setFontStyle("font-size:18;");
-        xComboBox2.setPreferredSize(new java.awt.Dimension(60, 40));
+        xComboBox2.setPreferredSize(new java.awt.Dimension(100, 40));
         xComboBox2.setShowCaption(false);
         xFormPanel2.add(xComboBox2);
 
@@ -88,7 +88,7 @@ public class DatePrompt extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(xFormPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );

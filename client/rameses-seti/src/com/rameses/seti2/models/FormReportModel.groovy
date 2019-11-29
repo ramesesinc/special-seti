@@ -80,6 +80,19 @@ public class FormReportModel extends ReportModel {
             throw new Exception("No available report data");
     }
     
+    private String _connection;
+    
+    public String getConnection() {
+        if( _connection !=null && _connection.trim().length() > 0 ) return _connection;
+        if( workunit?.workunit?.module?.properties?.connection ) {
+            _connection = workunit.workunit.module.properties.connection;
+        }
+        return _connection;
+    }
+    
+    public void setConnection(String c) {
+        _connection = c;
+    }
     
     public String getReportName() {
         String s = invoker.properties.reportName;
