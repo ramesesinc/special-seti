@@ -31,6 +31,10 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
     
     def callbackListHandler;
     
+    // custom handler 
+    def onSaveHandler; 
+    def onChangeStateHandler; 
+    
     String getPrintFormName() {
         def pfn = invoker.properties.printFormName;
         if(pfn) return pfn;
@@ -344,10 +348,14 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
                     entity = oldEntity;
                     //entity = new DataMap(entity);
                     throw uex;
-                }
-            }
-            afterSave();
-            mode = "read";
+                } 
+            } 
+            afterSave(); 
+            mode = "read"; 
+            
+            if ( onSaveHandler ) { 
+                onSaveHandler( entity ); 
+            } 
         }
         catch(Warning w) {
             try {
@@ -631,12 +639,21 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
             } else if ( hasCallerMethod('refresh')) { 
                 caller.refresh();
             }
-        } catch(Throwable t) {
+        } 
+        catch(Throwable t) { 
             t.printStackTrace(); 
-        }
+        } 
         
-    }  
-
+        try { 
+            if ( onChangeStateHandler ) { 
+                onChangeStateHandler( entity ); 
+            } 
+        } 
+        catch(Throwable t) { 
+            t.printStackTrace(); 
+            MsgBox.err( t ); 
+        } 
+    } 
 }
 
 
