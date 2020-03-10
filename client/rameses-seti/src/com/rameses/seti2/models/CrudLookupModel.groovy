@@ -13,6 +13,8 @@ public class CrudLookupModel extends CrudListModel implements SimpleLookupDataSo
     LookupSelector selector;
     
     boolean isOpenAllowed() {
+        if(invoker.properties.allowOpen!=null) return super.isOpenAllowed();
+        if(workunit.info.workunit_properties.allowOpen!=null) return super.isOpenAllowed();
         return false;
     }
 
