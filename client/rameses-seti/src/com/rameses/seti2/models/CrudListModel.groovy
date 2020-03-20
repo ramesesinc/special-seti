@@ -40,7 +40,7 @@ public class CrudListModel extends AbstractCrudModel {
     String strCols;
     
     
-    String _entitySchemaName_;   //used in case the view schema is not the same as entity schema
+    
     
     private String _tag_;
     private String _cols_;
@@ -60,16 +60,7 @@ public class CrudListModel extends AbstractCrudModel {
         return _findBy;
     }
     
-    public String getEntitySchemaName() {
-        if( !_entitySchemaName_ ) {
-            return workunit.info.workunit_properties.entitySchemaName;
-        }
-        return _entitySchemaName_;
-    } 
     
-    public void setEntitySchemaName( String s ) {
-        this._entitySchemaName_ = s;
-    }
     
     //overridables
     public void beforeQuery( def m ) {

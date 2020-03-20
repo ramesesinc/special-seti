@@ -104,6 +104,19 @@ public abstract class AbstractCrudModel  {
         this._schemaName_ = s;
     }
     
+    String _entitySchemaName_;   //used in case the view schema is not the same as entity schema
+    public String getEntitySchemaName() {
+        if( !_entitySchemaName_ ) {
+            return workunit.info.workunit_properties.entitySchemaName;
+        }
+        return _entitySchemaName_;
+    } 
+    
+    public void setEntitySchemaName( String s ) {
+        this._entitySchemaName_ = s;
+    }
+    
+    
     public def getPersistenceService() {
         String conn = getConnection();
         if( conn!=null && conn.trim().length() > 0 ) {
