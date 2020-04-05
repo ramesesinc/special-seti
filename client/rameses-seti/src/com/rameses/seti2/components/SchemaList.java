@@ -6,7 +6,6 @@ package com.rameses.seti2.components;
 
 import com.rameses.common.MethodResolver;
 import com.rameses.common.PropertyResolver;
-import com.rameses.osiris2.client.InvokerProxy;
 import com.rameses.osiris2.client.WorkUnitUIController;
 import com.rameses.rcp.common.Column;
 import com.rameses.rcp.common.MsgBox;

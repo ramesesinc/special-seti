@@ -233,6 +233,7 @@ public class SchemaListComponent extends ComponentBean  {
                 }
             } 
             o.selectedValue = { return o.getSelectedValue(); }
+            o.source = listModel;
         } 
         
         _handler = o; 
