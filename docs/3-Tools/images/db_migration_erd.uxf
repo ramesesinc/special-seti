@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.5.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>270</x>
+      <y>140</y>
+      <w>160</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>dbm_module
+--
+name
+dbname
+conf
+lastfileid</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>410</x>
+      <y>330</y>
+      <w>330</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>dbm_migration
+--
+
+dtfiled
+parentid  * //primkey is parentid+filename
+filename  *
+errors
+state (int)
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>260</x>
+      <y>230</y>
+      <w>170</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+parentid</panel_attributes>
+    <additional_attributes>60;30;60;140;150;140</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>400</x>
+      <y>170</y>
+      <w>212</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+lastfileid: filename</panel_attributes>
+    <additional_attributes>130;160;130;50;30;50</additional_attributes>
+  </element>
+</diagram>

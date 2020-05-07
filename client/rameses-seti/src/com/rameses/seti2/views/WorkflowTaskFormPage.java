@@ -183,6 +183,7 @@ public class WorkflowTaskFormPage extends javax.swing.JPanel {
 
                     xActionBar1.setFormName("formName");
                     xActionBar1.setName("formActions"); // NOI18N
+                    xActionBar1.setVisibleWhen("#{ showFormActions }");
                     xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0));
                     xActionBar1.setDynamic(true);
                     jToolBar1.add(xActionBar1);

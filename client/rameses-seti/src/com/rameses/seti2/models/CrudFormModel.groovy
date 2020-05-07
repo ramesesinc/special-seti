@@ -43,6 +43,11 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         return super.getSchemaName(); 
     }
     
+    //this is to who or hide the entire formaction toolbar. Used by taskform page
+    boolean getShowFormActions() {
+        return true;
+    }
+    
     String getFormType() {
         return 'form';
     }

@@ -37,6 +37,8 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         return m;
     }
     
+   
+    
     /*** 
      * default behavior is it will reload the entity after signal.
      * If you do not want this behavior you must override afterSignal. 
@@ -247,6 +249,11 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         TaskNotificationClient.getInstance().unregister( notifyHandler );
     }
 
+    public void invokeTaskAction( String actionName ) {
+         def t = transitions.find{ it.transition.action == actionName }
+         if(!t) throw new Exception("action " + actionName + " not found!");
+         t.execute();
+     }
 
 }
 
