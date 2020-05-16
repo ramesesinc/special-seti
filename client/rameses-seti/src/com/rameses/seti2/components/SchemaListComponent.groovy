@@ -214,7 +214,7 @@ public class SchemaListComponent extends ComponentBean  {
                 return _handler.isForceUpdate(); 
             } 
             return false; 
-        } 
+        }
     ] as EditorListModel; 
     
     void setHandler( o ) { 
@@ -238,6 +238,10 @@ public class SchemaListComponent extends ComponentBean  {
         
         _handler = o; 
     } 
+    
+    def getHandler() {
+        return _handler;
+    }
     
     def open() { 
         return openImpl( selectedItem );  
