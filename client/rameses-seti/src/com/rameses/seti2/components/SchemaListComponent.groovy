@@ -164,7 +164,12 @@ public class SchemaListComponent extends ComponentBean  {
             return queryService.getList( m );
         },
         onOpenItem : {o, colName ->
-            return openImpl( o );
+            if( _handler?.onOpenItem ) {
+                return _handler.onOpenItem(o,colName);
+            }
+            else {
+                return openImpl( o );
+            }
         }, 
         onRemoveItem: { o-> 
             if ( _handler?.beforeRemoveItem ) _handler.beforeRemoveItem( o );  
@@ -244,7 +249,7 @@ public class SchemaListComponent extends ComponentBean  {
     }
     
     def open() { 
-        return openImpl( selectedItem );  
+        return listModel.onOpenItem(selectedItem, null);
     }
     def openImpl( o ) {
         if (allowOpen && o) {
