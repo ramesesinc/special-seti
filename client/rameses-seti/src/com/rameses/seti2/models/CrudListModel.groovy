@@ -534,8 +534,10 @@ public class CrudListModel extends AbstractCrudModel {
         def ename = (!entitySchemaName)? schemaName : entitySchemaName;
         m._schemaname = ename;
         //show only primary key of the main element.
-        schema.fields.findAll{it.primary && it.source==ename}.each {
-            m.put( it.name, selectedItem.get(it.name));
+        schema.fields.findAll{it.primary}.each {
+            if( entitySchemaName !=null ||  it.source == ename ) {
+                m.put( it.name, selectedItem.get(it.name));
+            }
         }
         getPersistenceService().removeEntity( m );
         boolean hasNodes = reloadNodes();
