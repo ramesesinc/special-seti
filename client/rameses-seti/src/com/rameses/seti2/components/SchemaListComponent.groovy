@@ -38,9 +38,9 @@ public class SchemaListComponent extends ComponentBean  {
     String menuContext;
     def connection;
 
-    boolean allowCreate;
-    boolean allowOpen;
-    boolean allowDelete;
+    boolean _allowCreate;
+    boolean _allowOpen;
+    boolean _allowDelete;
     boolean allowSearch;
     int rows = 20;
 
@@ -53,6 +53,37 @@ public class SchemaListComponent extends ComponentBean  {
     def searchText;
     def orWhereList = [];
     def formActionContext;
+
+    public void setAllowCreate(boolean b) {
+        _allowCreate = b; 
+    }
+    public void setAllowOpen(boolean b) {
+        _allowOpen = b; 
+    }
+    public void setAllowDelete(boolean b) {
+        _allowDelete = b; 
+    }
+    
+    boolean isAllowCreate() {
+        if(_handler!=null && (_handler instanceof Map) && _handler.isAllowCreate!=null) {
+            return _handler.isAllowCreate();
+        }
+        return _allowCreate;
+    }
+
+    boolean isAllowOpen() {
+        if(_handler!=null && (_handler instanceof Map) && _handler.isAllowOpen!=null) {
+            return _handler.isAllowOpen();
+        }
+        return _allowOpen;
+    }
+
+    boolean isAllowDelete() {
+        if(_handler!=null && (_handler instanceof Map) && _handler.isAllowDelete!=null) {
+            return _handler.isAllowDelete();
+        }
+        return _allowDelete;
+    }
 
     public def getFormActions() {
         if( !formActionContext ) return [];
