@@ -257,7 +257,10 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
     }
     
     public def fetchEntityData() {
-        return getPersistenceService().read( entity );
+        def data = getPersistenceService().read( entity ); 
+        if ( data ) return data; 
+        
+        throw new Exception('Record no longer exist. Please refresh your screen'); 
     }
     
     def open() {
