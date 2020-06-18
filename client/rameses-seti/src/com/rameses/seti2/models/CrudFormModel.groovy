@@ -257,7 +257,11 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
     }
     
     public def fetchEntityData() {
-        def data = getPersistenceService().read( entity ); 
+        return fetchEntityData( entity ); 
+    }
+    
+    public def fetchEntityData( param ) {
+        def data = getPersistenceService().read( param ); 
         if ( data ) return data; 
         
         throw new Exception('Record no longer exist. Please refresh your screen'); 
@@ -404,12 +408,17 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         }
         
         try {
-            if ( hasCallerMethod('refresh', callbackListHandler)) { 
-                callbackListHandler.refresh(); 
-            } else if ( hasCallerMethod('refresh')) { 
-                caller.refresh();
+            def refreshMethodName = getInvokerProperty('callerRefreshMethod', true); 
+            if ( !refreshMethodName ) refreshMethodName = 'refresh'; 
+            
+            if ( hasCallerMethod( refreshMethodName, callbackListHandler)) { 
+                callbackListHandler.metaClass.invokeMethod( callbackListHandler, refreshMethodName, [] as Object[] );
+            } 
+            else if ( hasCallerMethod( refreshMethodName )) { 
+                caller.metaClass.invokeMethod( caller, refreshMethodName, [] as Object[] );
             }
-        } catch(Throwable t) {
+        } 
+        catch(Throwable t) {
             t.printStackTrace(); 
         }
         
@@ -456,10 +465,7 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         if ( hasCallerMethod('moveBackRecord', handler)) {
             handler.moveBackRecord(); 
             
-            reloadEntity();
-            sections?.each {
-                try { it.controller.codeBean.reload(); }catch(e){;}
-            }        
+            reloadEntityFromNavigator();
         }         
     }
 
@@ -472,11 +478,26 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         if ( hasCallerMethod('moveNextRecord', handler)) {
             handler.moveNextRecord(); 
 
-            reloadEntity();
-            sections?.each {
-                try { it.controller.codeBean.reload(); }catch(e){;}
-            }
+            reloadEntityFromNavigator();
         }
+    }
+    
+    void reloadEntityFromNavigator() {
+        def selitem = null; 
+        if ( hasCallerProperty('selectedItem')) { 
+            selitem = caller.selectedItem; 
+        }
+        if ( !selitem ) return; 
+        
+        entity = selitem; 
+        reloadEntity(); 
+        
+        sections?.each {
+            try { 
+                it.controller.codeBean.reload(); 
+            } 
+            catch(Throwable t){;}
+        }        
     }
     
     void reload() {
@@ -484,24 +505,34 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
     }
     
     void loadData() {
-        entity._schemaname = schemaName;
+        loadData( entity ); 
+    }
+    
+    void loadData( param ) {
+        param._schemaname = schemaName;
         entity = fetchEntityData();
-        itemHandlers.values().each {
-            it.reload();
+        itemHandlers.values().each { 
+            try {
+                it.reload(); 
+            } catch(Throwable t) {
+                MsgBox.err( t ); 
+            }
         }
-        binding?.refresh();
+        if ( binding ) {
+            binding.refresh();
+        }
     }
     
     def reloadEntity() { 
-        if ( hasCallerProperty('selectedItem')) { 
-            def selitem = caller.selectedItem; 
-            if ( !selitem ) return null; 
-            
-            entity = selitem; 
-        }
-        loadData();
+        return reloadEntity( entity ); 
+    }
+
+    def reloadEntity( param ) { 
+        loadData( param );
         afterOpen();
-        updateWindowProperties(); 
+        if ( subWindow ) {
+            subWindow.update(); 
+        }
     }
     
     /*************************************************************************

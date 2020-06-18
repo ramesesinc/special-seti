@@ -516,13 +516,16 @@ public class CrudListModel extends AbstractCrudModel {
     }
     
     void beforeRemoveItem() {}
+    void afterRemoveItem() {}
     
     void removeEntity() {
+        if(!selectedItem) return;
+
         if(!this.isDeleteAllowed()) 
             throw new Exception("Delete is not allowed for this transaction");
-        if(!selectedItem) return;
         if( selectedItem.system != null && selectedItem.system == 1 )
             throw new Exception("Cannot remove system created file");
+            
         try {
             beforeRemoveItem(); 
         } catch(BreakException be) { 
@@ -542,6 +545,12 @@ public class CrudListModel extends AbstractCrudModel {
         getPersistenceService().removeEntity( m );
         boolean hasNodes = reloadNodes();
         if(!hasNodes) listHandler.reload();
+        
+        try {
+            afterRemoveItem(); 
+        } catch(BreakException be) { 
+            // do nothing 
+        }         
     }
     
     /*
