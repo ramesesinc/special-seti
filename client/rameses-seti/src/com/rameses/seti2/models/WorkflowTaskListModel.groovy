@@ -20,6 +20,11 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
     def workflowTaskNotificationSvc;
     
     def _wfTaskListService;
+    
+    String _notificationid = null;
+    public String getNotificationid() {
+        return _notificationid;
+    }
 
     public def getWfTaskListService() {
         if( _wfTaskListService == null ) {
@@ -46,7 +51,12 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
     public void init() {
         if( !getProcessName() ) 
             throw new Exception("Please indicate a processName");
-
+        if( workunit.info.workunit_properties.notificationid ) {
+            _notificationid = workunit.info.workunit_properties.notificationid;
+        }    
+        else if(invoker.properties.notificationid ) {
+            _notificationid = invoker.properties.notificationid;
+        }
         super.init();  
         registerNotification();
     }
@@ -63,12 +73,17 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
     ] as DefaultNotificationHandler;
     
     public void registerNotification() {
-        TaskNotificationClient.getInstance().register(getProcessName(), notifyHandler );
+        if( getNotificationid()!=null ) {
+            TaskNotificationClient.getInstance().register(getNotificationid(), notifyHandler );
+        } 
+        
     }
     
     @Close
     void onClose() {
-        TaskNotificationClient.getInstance().unregister(notifyHandler );
+        if( getNotificationid()!=null ) {
+            TaskNotificationClient.getInstance().unregister(notifyHandler );
+        }    
     }
     
     public void beforeQuery( def m ) {
@@ -77,6 +92,7 @@ public class WorkflowTaskListModel extends com.rameses.seti2.models.CrudListMode
     
     public def beforeFetchNodes( def m ) {
         m.processname = getProcessName();
+        if( getNotificationid()!=null) m.notificationid =getNotificationid(); 
         m.uicontext = "tasklist";
         m.domain = domain;
         return null;
