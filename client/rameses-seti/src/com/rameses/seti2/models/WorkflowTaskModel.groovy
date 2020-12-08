@@ -25,6 +25,12 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         return null;
     }
     
+    public boolean isUserTaskAssignee() {
+        if( task.assignee?.objid == null ) return false;
+        return (task.assignee?.objid == user.objid);
+    }
+    
+    
     def task;
     String processName;
     List transitions = [];

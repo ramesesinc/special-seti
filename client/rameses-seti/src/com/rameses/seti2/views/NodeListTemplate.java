@@ -130,7 +130,7 @@ public class NodeListTemplate extends javax.swing.JPanel {
         xLabel1 = new com.rameses.rcp.control.XLabel();
         jPanel8 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
-        btnCancel1 = new com.rameses.rcp.control.XButton();
+        btnCancel2 = new com.rameses.rcp.control.XButton();
         btnCreate = new com.rameses.rcp.control.XButton();
         btnOpen = new com.rameses.rcp.control.XButton();
         btnDelete = new com.rameses.rcp.control.XButton();
@@ -179,14 +179,16 @@ public class NodeListTemplate extends javax.swing.JPanel {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
 
-        btnCancel1.setCaption("");
-        btnCancel1.setName("showMenu"); // NOI18N
-        btnCancel1.setAutoRefresh(false);
-        btnCancel1.setFocusable(false);
-        btnCancel1.setIconResource("images/menu.png");
-        btnCancel1.setImmediate(true);
-        btnCancel1.setMargin(new java.awt.Insets(1, 1, 1, 1));
-        jToolBar1.add(btnCancel1);
+        btnCancel2.setCaption("");
+        btnCancel2.setName("_close"); // NOI18N
+        btnCancel2.setAutoRefresh(false);
+        btnCancel2.setFocusable(false);
+        btnCancel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCancel2.setIconResource("images/toolbars/cancel.png");
+        btnCancel2.setImmediate(true);
+        btnCancel2.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        btnCancel2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(btnCancel2);
 
         btnCreate.setCaption("");
         btnCreate.setName("create"); // NOI18N
@@ -316,7 +318,7 @@ public class NodeListTemplate extends javax.swing.JPanel {
         xSubFormPanel1.setLayout(xSubFormPanel1Layout);
         xSubFormPanel1Layout.setHorizontalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 160, Short.MAX_VALUE)
+            .addGap(0, 162, Short.MAX_VALUE)
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -395,7 +397,7 @@ public class NodeListTemplate extends javax.swing.JPanel {
     }//GEN-LAST:event_btnRefresh2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.rameses.rcp.control.XButton btnCancel1;
+    private com.rameses.rcp.control.XButton btnCancel2;
     private com.rameses.rcp.control.XButton btnCreate;
     private com.rameses.rcp.control.XButton btnDelete;
     private com.rameses.rcp.control.XButton btnFilter;
