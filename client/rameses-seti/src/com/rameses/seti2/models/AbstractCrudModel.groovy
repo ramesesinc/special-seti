@@ -487,5 +487,17 @@ public abstract class AbstractCrudModel  {
         return workunit.workunit.currentPage.name;
     }    
     
+    String getInvokerProperty( String name, boolean cascade ) { 
+        if ( !name ) return null; 
+        if ( invoker == null ) return null; 
+        
+        def val = invoker.properties.get( name ); 
+        if ( val ) return val;
+        
+        if ( !cascade ) return null; 
+        if ( workunit?.info?.workunit_properties == null ) return null; 
+        
+        return workunit.info.workunit_properties.get( name ); 
+    }
 }
         
