@@ -229,6 +229,7 @@ public class SchemaList extends XComponentPanel {
         WorkUnitUIController wu = (WorkUnitUIController)bean.getCallerBinding().getController();
         String conn = (String)wu.getWorkunit().getModule().getProperties().get("connection");
         bean.setProperty("connection", conn); 
+        
     } 
     
     public void setProperty( String name, Object value ) { 

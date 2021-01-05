@@ -87,11 +87,10 @@ public class SchemaListComponent extends ComponentBean  {
 
     public def getFormActions() {
         if( !formActionContext ) return [];
-        
         def list = []; 
         try {
             def actionProvider = ClientContext.currentContext.actionProvider; 
-            list = actionProvider.getActionsByType( formActionContext, callerBinding.controller );
+            list = actionProvider.getActionsByType( formActionContext, callerBinding.controller ); 
             list.each{ 
                 it.properties.put('Action.Bean', callerBinding.bean); 
             }

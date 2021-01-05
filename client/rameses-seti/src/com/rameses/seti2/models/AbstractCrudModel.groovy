@@ -363,6 +363,15 @@ public abstract class AbstractCrudModel  {
         return secProvider.checkPermission( domain, role, deletePermission );
     }
     
+    boolean isShowClose() {
+        def showClose = invoker.properties.showClose;  
+        if(!showClose) showClose = workunit.info.workunit_properties.showClose; 
+        if( showClose ) {
+            if( showClose == 'false' ) return false;
+        }
+        return true;
+    }
+    
     def getExprParams() {
         return [entity:getEntityContext(), context: this, mode: mode];
     }

@@ -181,6 +181,7 @@ public class NodeListTemplate extends javax.swing.JPanel {
 
         btnCancel2.setCaption("");
         btnCancel2.setName("_close"); // NOI18N
+        btnCancel2.setVisibleWhen("#{ showClose == true }");
         btnCancel2.setAutoRefresh(false);
         btnCancel2.setFocusable(false);
         btnCancel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

@@ -86,6 +86,7 @@ public class CrudListPage extends javax.swing.JPanel {
 
         btnCancel1.setCaption("");
         btnCancel1.setName("_close"); // NOI18N
+        btnCancel1.setVisibleWhen("#{ showClose == true }");
         btnCancel1.setAutoRefresh(false);
         btnCancel1.setFocusable(false);
         btnCancel1.setIconResource("images/toolbars/cancel.png");

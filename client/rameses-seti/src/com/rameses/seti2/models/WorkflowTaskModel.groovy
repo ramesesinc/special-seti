@@ -237,14 +237,21 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
             binding.refresh();
         }
         def q = [domain: task.domain, role: task.role];
-        Modal.show("sys_user_role:lookup", [query: q,  onselect: h ] );
+        def pname = "sys_user_role:lookup";
+        try {
+            def n = "sys_user_role:"+task.domain.toLowerCase()+":lookup";
+            def p = Inv.lookupOpener(n, ["query.role":task.role]);
+            pname = n;
+        }
+        catch(ign){
+            
+        }
+        Modal.show(pname, [query: q,  onselect: h ] );
     }
-    
     
     //we are now dependent on this routine.
     def notifyHandler = [
         onMessage: { msg ->
-            println msg;
             if(!refreshingScreen) return;
             if( msg.refid == entity.objid ) {
                 reload();
