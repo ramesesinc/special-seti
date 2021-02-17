@@ -64,11 +64,10 @@ public class CrudListModel extends AbstractCrudModel {
     
     //overridables
     public void beforeQuery( def m ) {
-        ;//do nothing
     }
     
     public def beforeFetchNodes( def m ) {
-        ;//do nothing
+        return null; 
     }
 
     // this is the columns definition for UI 
@@ -217,7 +216,10 @@ public class CrudListModel extends AbstractCrudModel {
         
         afterInit();
     } 
-        
+
+    public void beforeBuildSelectQuery( Map query ) {
+    }
+    
     public def buildSelectQuery(Map o) {
         return buildSelectQuery(o, true);
     }
@@ -228,6 +230,8 @@ public class CrudListModel extends AbstractCrudModel {
         if(query) {
             m.putAll(query);
         } 
+        
+        beforeBuildSelectQuery( m ); 
         
         //place the orgid and userid immediately in the query.
         if( query !=null && !query.orgid) {
@@ -278,6 +282,7 @@ public class CrudListModel extends AbstractCrudModel {
                 m.orderBy = getOrderBy();
             }
         }
+
         beforeQuery( m );
         return m;
     }
