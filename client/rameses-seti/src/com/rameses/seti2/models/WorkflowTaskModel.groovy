@@ -76,7 +76,7 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         return procName;
     }
 
-    public def open() {
+    public def open() {        
         //we need to do this so it will not affect the original entity from the list.
         def tsk = null;
         def n = entity;
@@ -146,6 +146,7 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
     }
     
     final void buildTransitionActions( def tsk ) {
+         transitions.clear();        
          if(! tsk) return; 
          if( tsk.state == 'end' ) return; 
          if( !tsk.assignee?.objid && tsk.role != null ) {
