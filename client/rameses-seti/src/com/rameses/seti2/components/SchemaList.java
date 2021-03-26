@@ -39,6 +39,7 @@ public class SchemaList extends XComponentPanel {
     private String styleRule;
     private String formActions;
     private String entityName;
+    private String entitySchemaName;
     
     private Column[] columns;     
     private int rows = 20;
@@ -214,7 +215,7 @@ public class SchemaList extends XComponentPanel {
         bean.setProperty("menuContext", getMenuContext()); 
         bean.setProperty("rows", getRows()); 
         bean.setProperty("entityName", getEntityName()); 
-        
+        bean.setProperty("entitySchemaName", getEntitySchemaName()); 
 
         Object sr = getProperty(getStyleRule()); 
         bean.setProperty("stylerule", (sr == null ? getStyleRule() : sr)); 
@@ -382,6 +383,20 @@ public class SchemaList extends XComponentPanel {
      */
     public void setEntityName(String entityName) {
         this.entityName = entityName;
+    }
+
+    /**
+     * @return the entitySchemaName
+     */
+    public String getEntitySchemaName() {
+        return entitySchemaName;
+    }
+
+    /**
+     * @param entitySchemaName the entitySchemaName to set
+     */
+    public void setEntitySchemaName(String entitySchemaName) {
+        this.entitySchemaName = entitySchemaName;
     }
         
     private class SelectionHandlerImpl implements SelectionHandler {

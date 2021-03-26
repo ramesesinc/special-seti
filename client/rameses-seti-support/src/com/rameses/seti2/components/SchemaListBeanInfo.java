@@ -43,6 +43,7 @@ public class SchemaListBeanInfo extends ComponentBeanInfoSupport {
         add( list, "actionContext", true ); 
         add( list, "menuContext", true ); 
         add( list, "schemaName", true ); 
+        add( list, "entitySchemaName", true ); 
         add( list, "entityName", true ); 
 
         add( list, "customFilter", true ); 

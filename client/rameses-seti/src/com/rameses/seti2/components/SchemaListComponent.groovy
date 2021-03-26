@@ -29,6 +29,7 @@ public class SchemaListComponent extends ComponentBean  {
     }   
     
     String schemaName;
+    String entitySchemaName;
     String entityName;
     String customFilter;
     String hiddenCols;
@@ -284,7 +285,13 @@ public class SchemaListComponent extends ComponentBean  {
     def openImpl( o ) {
         if (allowOpen && o) {
             if ( _handler?.beforeOpen ) _handler.beforeOpen( o );
-            String sname = (entityName) ? entityName : schemaName;
+            String sname = schemaName;
+            if( entitySchemaName ) {
+                sname = entitySchemaName;
+            }
+            else if( entityName ) {
+                sname = entityName;
+            }
             return Inv.lookupOpener(sname+":open", [ entity: o, callbackListHandler: this ]);         
         }
         return null; 
@@ -295,8 +302,13 @@ public class SchemaListComponent extends ComponentBean  {
         if(!selectedItem) throw new Exception("Please select an item to remove");
         if( !MsgBox.confirm("Are you sure you want to remove this item?")) return null;
         
-        def sname = (entityName ? entityName : schemaName);
-        
+        def sname = schemaName;
+        if( entitySchemaName ) {
+            sname = entitySchemaName;
+        }
+        else if( entityName ) {
+            sname = entityName;
+        }
         def op = null; 
         try {
             op = Inv.lookupOpener(sname +':removeEntity', [entity: selectedItem]); 
@@ -304,7 +316,7 @@ public class SchemaListComponent extends ComponentBean  {
         } catch(Throwable t) {;}
         
         if ( op == null ) {
-            selectedItem._schemaname = (entityName) ? entityName : schemaName ;
+            selectedItem._schemaname = sname ;
             persistenceService.removeEntity( selectedItem );
         } 
         else  { 
@@ -321,7 +333,14 @@ public class SchemaListComponent extends ComponentBean  {
             m = _handler.createItem(); 
         }
         if ( m == null ) m = [:]; 
-        String sname = (entityName) ? entityName : schemaName;
+        def sname = schemaName;
+        if( entitySchemaName ) {
+            sname = entitySchemaName;
+        }
+        else if( entityName ) {
+            sname = entityName;
+        }
+        println "schemaname is " + sname;
         return Inv.lookupOpener(sname+":create", [ defaultData: m, callbackListHandler: this ]);
     } 
     

@@ -226,6 +226,10 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         catch(Exception ex){;}
     }
     
+    public boolean getCanChangeAssignee() {
+        return secProvider.checkPermission( domain, "ADMIN", "wf.changeAssignee" );
+    }
+    
     void changeAssignee() {
         //task.domain;
         //task.assignee;
