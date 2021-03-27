@@ -4,6 +4,7 @@
  */
 package com.rameses.seti2.components;
 
+import com.rameses.common.ExpressionResolver;
 import com.rameses.common.MethodResolver;
 import com.rameses.common.PropertyResolver;
 import com.rameses.osiris2.client.WorkUnitUIController;
@@ -204,7 +205,6 @@ public class SchemaList extends XComponentPanel {
         bean.setProperty("allowSearch", isAllowSearch()); 
         bean.setProperty("formActionContext", getFormActions() ); 
         
-        bean.setProperty("schemaName", getSchemaName()); 
         bean.setProperty("hiddenCols", getHiddenCols()); 
         bean.setProperty("customFilter", getCustomFilter()); 
         bean.setProperty("orderBy", getOrderBy()); 
@@ -214,8 +214,19 @@ public class SchemaList extends XComponentPanel {
         bean.setProperty("actionContext", getActionContext()); 
         bean.setProperty("menuContext", getMenuContext()); 
         bean.setProperty("rows", getRows()); 
-        bean.setProperty("entityName", getEntityName()); 
-        bean.setProperty("entitySchemaName", getEntitySchemaName()); 
+        bean.setProperty("entityName", getEntityName());
+        
+        String schemaName =  getSchemaName();
+        if( schemaName.toString().trim().startsWith("#")) {
+            schemaName = ExpressionResolver.getInstance().evalString(schemaName, getBinding().getBean() );
+        }
+        bean.setProperty("schemaName", schemaName );
+        
+        String entitySchemaName =  getEntitySchemaName();
+        if( entitySchemaName.toString().trim().startsWith("#")) {
+            entitySchemaName = ExpressionResolver.getInstance().evalString(entitySchemaName, getBinding().getBean() );
+        }
+        bean.setProperty("entitySchemaName", entitySchemaName ); 
 
         Object sr = getProperty(getStyleRule()); 
         bean.setProperty("stylerule", (sr == null ? getStyleRule() : sr)); 
