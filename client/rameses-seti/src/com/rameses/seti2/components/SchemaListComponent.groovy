@@ -340,7 +340,7 @@ public class SchemaListComponent extends ComponentBean  {
         else if( entityName ) {
             sname = entityName;
         }
-        println "schemaname is " + sname;
+        //println "schemaname is " + sname;
         return Inv.lookupOpener(sname+":create", [ defaultData: m, callbackListHandler: this ]);
     } 
     

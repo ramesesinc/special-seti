@@ -217,13 +217,13 @@ public class SchemaList extends XComponentPanel {
         bean.setProperty("entityName", getEntityName());
         
         String schemaName =  getSchemaName();
-        if( schemaName.toString().trim().startsWith("#")) {
+        if(schemaName!=null && schemaName.toString().trim().startsWith("#")) {
             schemaName = ExpressionResolver.getInstance().evalString(schemaName, getBinding().getBean() );
         }
         bean.setProperty("schemaName", schemaName );
         
         String entitySchemaName =  getEntitySchemaName();
-        if( entitySchemaName.toString().trim().startsWith("#")) {
+        if(entitySchemaName!=null && entitySchemaName.toString().trim().startsWith("#")) {
             entitySchemaName = ExpressionResolver.getInstance().evalString(entitySchemaName, getBinding().getBean() );
         }
         bean.setProperty("entitySchemaName", entitySchemaName ); 
