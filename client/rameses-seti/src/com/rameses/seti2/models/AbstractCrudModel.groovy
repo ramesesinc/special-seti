@@ -263,6 +263,12 @@ public abstract class AbstractCrudModel  {
         if(createPermission!=null) createPermission = schemaName+"."+createPermission;
         return secProvider.checkPermission( domain, role, createPermission );
     }
+
+    boolean isCloseAllowed() {
+        def allowed = workunit.info.workunit_properties.allowClose;  
+        if(!allowed) return true;
+        return allowed.toBoolean();
+    }
     
     boolean isFilterAllowed() {
         def allowed = workunit.info.workunit_properties.allowFilter;  

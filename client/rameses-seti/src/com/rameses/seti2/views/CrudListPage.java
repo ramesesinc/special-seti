@@ -78,6 +78,7 @@ public class CrudListPage extends javax.swing.JPanel {
         jPanel2.setPreferredSize(new java.awt.Dimension(400, 28));
         jPanel2.setLayout(new java.awt.BorderLayout());
 
+        xPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
         xPanel2.setLayout(new com.rameses.rcp.control.layout.XLayout());
 
         jToolBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -86,6 +87,7 @@ public class CrudListPage extends javax.swing.JPanel {
 
         btnCancel1.setCaption("");
         btnCancel1.setName("_close"); // NOI18N
+        btnCancel1.setVisibleWhen("#{closeAllowed==true}");
         btnCancel1.setAutoRefresh(false);
         btnCancel1.setFocusable(false);
         btnCancel1.setIconResource("images/toolbars/cancel.png");
@@ -220,7 +222,7 @@ public class CrudListPage extends javax.swing.JPanel {
         xSubFormPanel1.setLayout(xSubFormPanel1Layout);
         xSubFormPanel1Layout.setHorizontalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 206, Short.MAX_VALUE)
+            .addGap(0, 249, Short.MAX_VALUE)
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,7 +232,6 @@ public class CrudListPage extends javax.swing.JPanel {
         jPanel2.add(xSubFormPanel1, java.awt.BorderLayout.CENTER);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 0, 0));
-        jPanel3.setLayout(new com.rameses.rcp.control.layout.CenterLayout());
 
         xPanel1.setLayout(new java.awt.BorderLayout());
 
