@@ -6,13 +6,30 @@ import com.rameses.osiris2.client.*;
 import com.rameses.osiris2.common.*;
 import com.rameses.rcp.framework.ClientContext;
 import com.rameses.common.*;
+import java.util.Map;
         
 public class CrudLookupModel extends CrudListModel implements SimpleLookupDataSource {
 
     def onselect;
     LookupSelector selector;
     
+    def beforeQueryHandler;
+    boolean multiSelectEnabled; 
+    
+    public void setMultiSelectEnabled( boolean b ) {
+        this.multiSelectEnabled = b; 
+        setMultiSelect( b ); 
+    }
+    
+    public void beforeBuildSelectQuery( Map query ) {
+        if ( beforeQueryHandler ) {
+            beforeQueryHandler( query ); 
+        } 
+    }
+        
     boolean isOpenAllowed() {
+        if(invoker.properties.allowOpen!=null) return super.isOpenAllowed();
+        if(workunit.info.workunit_properties.allowOpen!=null) return super.isOpenAllowed();
         return false;
     }
 
@@ -46,6 +63,7 @@ public class CrudLookupModel extends CrudListModel implements SimpleLookupDataSo
     def doOk() { 
         def selobj = listHandler.getSelectedValue(); 
         if ( !selobj ) throw new Exception("Please select an item"); 
+        
         selobj = lookupSelectedValue( selobj );
         
         if ( selector ) selector.select( selobj );
@@ -55,9 +73,16 @@ public class CrudLookupModel extends CrudListModel implements SimpleLookupDataSo
                 binding.fireNavigation( retval ); 
             } 
         }
-        return "_close"; 
+        
+        if ( this.multiSelectEnabled ) {
+            listHandler.doSearch();
+            binding.requestFocus('searchText'); 
+            return null; 
+        }
+        
+        return '_close'; 
     } 
-    
+        
     def doCancel() {
         return "_close";
     }

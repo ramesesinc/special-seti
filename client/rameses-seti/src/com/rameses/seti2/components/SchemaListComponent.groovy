@@ -29,6 +29,7 @@ public class SchemaListComponent extends ComponentBean  {
     }   
     
     String schemaName;
+    String entitySchemaName;
     String entityName;
     String customFilter;
     String hiddenCols;
@@ -38,9 +39,9 @@ public class SchemaListComponent extends ComponentBean  {
     String menuContext;
     def connection;
 
-    boolean allowCreate;
-    boolean allowOpen;
-    boolean allowDelete;
+    boolean _allowCreate;
+    boolean _allowOpen;
+    boolean _allowDelete;
     boolean allowSearch;
     int rows = 20;
 
@@ -54,13 +55,43 @@ public class SchemaListComponent extends ComponentBean  {
     def orWhereList = [];
     def formActionContext;
 
+    public void setAllowCreate(boolean b) {
+        _allowCreate = b; 
+    }
+    public void setAllowOpen(boolean b) {
+        _allowOpen = b; 
+    }
+    public void setAllowDelete(boolean b) {
+        _allowDelete = b; 
+    }
+    
+    boolean isAllowCreate() {
+        if(_handler!=null && (_handler instanceof Map) && _handler.isAllowCreate!=null) {
+            return _handler.isAllowCreate();
+        }
+        return _allowCreate;
+    }
+
+    boolean isAllowOpen() {
+        if(_handler!=null && (_handler instanceof Map) && _handler.isAllowOpen!=null) {
+            return _handler.isAllowOpen();
+        }
+        return _allowOpen;
+    }
+
+    boolean isAllowDelete() {
+        if(_handler!=null && (_handler instanceof Map) && _handler.isAllowDelete!=null) {
+            return _handler.isAllowDelete();
+        }
+        return _allowDelete;
+    }
+
     public def getFormActions() {
         if( !formActionContext ) return [];
-        
         def list = []; 
         try {
             def actionProvider = ClientContext.currentContext.actionProvider; 
-            list = actionProvider.getActionsByType( formActionContext, callerBinding.controller );
+            list = actionProvider.getActionsByType( formActionContext, callerBinding.controller ); 
             list.each{ 
                 it.properties.put('Action.Bean', callerBinding.bean); 
             }
@@ -164,7 +195,12 @@ public class SchemaListComponent extends ComponentBean  {
             return queryService.getList( m );
         },
         onOpenItem : {o, colName ->
-            return openImpl( o );
+            if( _handler?.onOpenItem ) {
+                return _handler.onOpenItem(o,colName);
+            }
+            else {
+                return openImpl( o );
+            }
         }, 
         onRemoveItem: { o-> 
             if ( _handler?.beforeRemoveItem ) _handler.beforeRemoveItem( o );  
@@ -214,7 +250,7 @@ public class SchemaListComponent extends ComponentBean  {
                 return _handler.isForceUpdate(); 
             } 
             return false; 
-        } 
+        }
     ] as EditorListModel; 
     
     void setHandler( o ) { 
@@ -233,18 +269,29 @@ public class SchemaListComponent extends ComponentBean  {
                 }
             } 
             o.selectedValue = { return o.getSelectedValue(); }
+            o.source = listModel;
         } 
         
         _handler = o; 
     } 
     
+    def getHandler() {
+        return _handler;
+    }
+    
     def open() { 
-        return openImpl( selectedItem );  
+        return listModel.onOpenItem(selectedItem, null);
     }
     def openImpl( o ) {
         if (allowOpen && o) {
             if ( _handler?.beforeOpen ) _handler.beforeOpen( o );
-            String sname = (entityName) ? entityName : schemaName;
+            String sname = schemaName;
+            if( entitySchemaName ) {
+                sname = entitySchemaName;
+            }
+            else if( entityName ) {
+                sname = entityName;
+            }
             return Inv.lookupOpener(sname+":open", [ entity: o, callbackListHandler: this ]);         
         }
         return null; 
@@ -255,8 +302,13 @@ public class SchemaListComponent extends ComponentBean  {
         if(!selectedItem) throw new Exception("Please select an item to remove");
         if( !MsgBox.confirm("Are you sure you want to remove this item?")) return null;
         
-        def sname = (entityName ? entityName : schemaName);
-        
+        def sname = schemaName;
+        if( entitySchemaName ) {
+            sname = entitySchemaName;
+        }
+        else if( entityName ) {
+            sname = entityName;
+        }
         def op = null; 
         try {
             op = Inv.lookupOpener(sname +':removeEntity', [entity: selectedItem]); 
@@ -264,7 +316,7 @@ public class SchemaListComponent extends ComponentBean  {
         } catch(Throwable t) {;}
         
         if ( op == null ) {
-            selectedItem._schemaname = (entityName) ? entityName : schemaName ;
+            selectedItem._schemaname = sname ;
             persistenceService.removeEntity( selectedItem );
         } 
         else  { 
@@ -281,7 +333,14 @@ public class SchemaListComponent extends ComponentBean  {
             m = _handler.createItem(); 
         }
         if ( m == null ) m = [:]; 
-        String sname = (entityName) ? entityName : schemaName;
+        def sname = schemaName;
+        if( entitySchemaName ) {
+            sname = entitySchemaName;
+        }
+        else if( entityName ) {
+            sname = entityName;
+        }
+        //println "schemaname is " + sname;
         return Inv.lookupOpener(sname+":create", [ defaultData: m, callbackListHandler: this ]);
     } 
     

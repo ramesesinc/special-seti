@@ -4,8 +4,8 @@
  */
 package com.rameses.seti2.views;
 
-import com.rameses.osiris2.themes.OKCancelPage;
 import com.rameses.rcp.ui.annotations.Template;
+import com.rameses.seti2.themes.LookupPage;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -18,7 +18,7 @@ import java.awt.LayoutManager2;
  *
  * @author dell
  */ 
-@Template(OKCancelPage.class)
+@Template(LookupPage.class)
 public class CrudLookupPage extends javax.swing.JPanel {
 
     /**

@@ -40,7 +40,7 @@ public class CrudListModel extends AbstractCrudModel {
     String strCols;
     
     
-    String _entitySchemaName_;   //used in case the view schema is not the same as entity schema
+    
     
     private String _tag_;
     private String _cols_;
@@ -60,24 +60,14 @@ public class CrudListModel extends AbstractCrudModel {
         return _findBy;
     }
     
-    public String getEntitySchemaName() {
-        if( !_entitySchemaName_ ) {
-            return workunit.info.workunit_properties.entitySchemaName;
-        }
-        return _entitySchemaName_;
-    } 
     
-    public void setEntitySchemaName( String s ) {
-        this._entitySchemaName_ = s;
-    }
     
     //overridables
     public void beforeQuery( def m ) {
-        ;//do nothing
     }
     
     public def beforeFetchNodes( def m ) {
-        ;//do nothing
+        return null; 
     }
 
     // this is the columns definition for UI 
@@ -226,7 +216,10 @@ public class CrudListModel extends AbstractCrudModel {
         
         afterInit();
     } 
-        
+
+    public void beforeBuildSelectQuery( Map query ) {
+    }
+    
     public def buildSelectQuery(Map o) {
         return buildSelectQuery(o, true);
     }
@@ -237,6 +230,8 @@ public class CrudListModel extends AbstractCrudModel {
         if(query) {
             m.putAll(query);
         } 
+        
+        beforeBuildSelectQuery( m ); 
         
         //place the orgid and userid immediately in the query.
         if( query !=null && !query.orgid) {
@@ -287,6 +282,7 @@ public class CrudListModel extends AbstractCrudModel {
                 m.orderBy = getOrderBy();
             }
         }
+
         beforeQuery( m );
         return m;
     }
@@ -525,13 +521,16 @@ public class CrudListModel extends AbstractCrudModel {
     }
     
     void beforeRemoveItem() {}
+    void afterRemoveItem() {}
     
     void removeEntity() {
+        if(!selectedItem) return;
+
         if(!this.isDeleteAllowed()) 
             throw new Exception("Delete is not allowed for this transaction");
-        if(!selectedItem) return;
         if( selectedItem.system != null && selectedItem.system == 1 )
             throw new Exception("Cannot remove system created file");
+            
         try {
             beforeRemoveItem(); 
         } catch(BreakException be) { 
@@ -543,12 +542,20 @@ public class CrudListModel extends AbstractCrudModel {
         def ename = (!entitySchemaName)? schemaName : entitySchemaName;
         m._schemaname = ename;
         //show only primary key of the main element.
-        schema.fields.findAll{it.primary && it.source==ename}.each {
-            m.put( it.name, selectedItem.get(it.name));
+        schema.fields.findAll{it.primary}.each {
+            if( entitySchemaName !=null ||  it.source == ename ) {
+                m.put( it.name, selectedItem.get(it.name));
+            }
         }
         getPersistenceService().removeEntity( m );
         boolean hasNodes = reloadNodes();
         if(!hasNodes) listHandler.reload();
+        
+        try {
+            afterRemoveItem(); 
+        } catch(BreakException be) { 
+            // do nothing 
+        }         
     }
     
     /*

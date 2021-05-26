@@ -21,6 +21,16 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
     @Service("WorkflowTaskNotificationService")
     def workflowTaskNotificationSvc;
     
+    public String getNotificationid() {
+        return null;
+    }
+    
+    public boolean isUserTaskAssignee() {
+        if( task.assignee?.objid == null ) return false;
+        return (task.assignee?.objid == user.objid);
+    }
+    
+    
     def task;
     String processName;
     List transitions = [];
@@ -36,6 +46,8 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         m.task = task;
         return m;
     }
+    
+   
     
     /*** 
      * default behavior is it will reload the entity after signal.
@@ -64,7 +76,7 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         return procName;
     }
 
-    public def open() {
+    public def open() {        
         //we need to do this so it will not affect the original entity from the list.
         def tsk = null;
         def n = entity;
@@ -134,6 +146,7 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
     }
     
     final void buildTransitionActions( def tsk ) {
+         transitions.clear();        
          if(! tsk) return; 
          if( tsk.state == 'end' ) return; 
          if( !tsk.assignee?.objid && tsk.role != null ) {
@@ -142,6 +155,7 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
                 m.processname = getProcessName();
                 m.taskid = task.taskid;
                 m.refid = task.refid;
+                if( getNotificationid() !=null ) m.notificationid = getNotificationid();
                 refreshingScreen = true;
                 def res = workflowTaskService.assignToMe(m);
                 task.assignee = res.assignee;
@@ -154,6 +168,7 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         }
         else {
             def h = { t->
+                if( getNotificationid() !=null ) t.notificationid = getNotificationid();
                 return signal(t);
             }
             tsk.transitions.each{ 
@@ -211,6 +226,10 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
         catch(Exception ex){;}
     }
     
+    public boolean getCanChangeAssignee() {
+        return secProvider.checkPermission( domain, "ADMIN", "wf.changeAssignee" );
+    }
+    
     void changeAssignee() {
         //task.domain;
         //task.assignee;
@@ -223,14 +242,21 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
             binding.refresh();
         }
         def q = [domain: task.domain, role: task.role];
-        Modal.show("sys_user_role:lookup", [query: q,  onselect: h ] );
+        def pname = "sys_user_role:lookup";
+        try {
+            def n = "sys_user_role:"+task.domain.toLowerCase()+":lookup";
+            def p = Inv.lookupOpener(n, ["query.role":task.role]);
+            pname = n;
+        }
+        catch(ign){
+            
+        }
+        Modal.show(pname, [query: q,  onselect: h ] );
     }
-    
     
     //we are now dependent on this routine.
     def notifyHandler = [
         onMessage: { msg ->
-            println msg;
             if(!refreshingScreen) return;
             if( msg.refid == entity.objid ) {
                 reload();
@@ -239,14 +265,23 @@ public class WorkflowTaskModel extends CrudFormModel implements WorkflowTaskList
     ] as DefaultNotificationHandler;
 
     public void registerNotification() {
-        TaskNotificationClient.getInstance().register(getProcessName(), notifyHandler );
+        if( getNotificationid()!=null) {
+            TaskNotificationClient.getInstance().register(getNotificationid(), notifyHandler );
+        }
     }
     
     @Close
     void onClose() {
-        TaskNotificationClient.getInstance().unregister( notifyHandler );
+        if( getNotificationid()!=null) {        
+            TaskNotificationClient.getInstance().unregister( notifyHandler );
+        }    
     }
 
+    public void invokeTaskAction( String actionName ) {
+         def t = transitions.find{ it.transition.action == actionName }
+         if(!t) throw new Exception("action " + actionName + " not found!");
+         t.execute();
+     }
 
 }
 

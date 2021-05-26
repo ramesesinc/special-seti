@@ -104,6 +104,19 @@ public abstract class AbstractCrudModel  {
         this._schemaName_ = s;
     }
     
+    String _entitySchemaName_;   //used in case the view schema is not the same as entity schema
+    public String getEntitySchemaName() {
+        if( !_entitySchemaName_ ) {
+            return workunit.info.workunit_properties.entitySchemaName;
+        }
+        return _entitySchemaName_;
+    } 
+    
+    public void setEntitySchemaName( String s ) {
+        this._entitySchemaName_ = s;
+    }
+    
+    
     public def getPersistenceService() {
         String conn = getConnection();
         if( conn!=null && conn.trim().length() > 0 ) {
@@ -356,6 +369,15 @@ public abstract class AbstractCrudModel  {
         return secProvider.checkPermission( domain, role, deletePermission );
     }
     
+    boolean isShowClose() {
+        def showClose = invoker.properties.showClose;  
+        if(!showClose) showClose = workunit.info.workunit_properties.showClose; 
+        if( showClose ) {
+            if( showClose == 'false' ) return false;
+        }
+        return true;
+    }
+    
     def getExprParams() {
         return [entity:getEntityContext(), context: this, mode: mode];
     }
@@ -480,5 +502,17 @@ public abstract class AbstractCrudModel  {
         return workunit.workunit.currentPage.name;
     }    
     
+    String getInvokerProperty( String name, boolean cascade ) { 
+        if ( !name ) return null; 
+        if ( invoker == null ) return null; 
+        
+        def val = invoker.properties.get( name ); 
+        if ( val ) return val;
+        
+        if ( !cascade ) return null; 
+        if ( workunit?.info?.workunit_properties == null ) return null; 
+        
+        return workunit.info.workunit_properties.get( name ); 
+    }
 }
         

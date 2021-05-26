@@ -43,6 +43,11 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         return super.getSchemaName(); 
     }
     
+    //this is to who or hide the entire formaction toolbar. Used by taskform page
+    boolean getShowFormActions() {
+        return true;
+    }
+    
     String getFormType() {
         return 'form';
     }
@@ -252,7 +257,14 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
     }
     
     public def fetchEntityData() {
-        return getPersistenceService().read( entity );
+        return fetchEntityData( entity ); 
+    }
+    
+    public def fetchEntityData( param ) {
+        def data = getPersistenceService().read( param ); 
+        if ( data ) return data; 
+        
+        throw new Exception('Record no longer exist. Please refresh your screen'); 
     }
     
     def open() {
@@ -329,7 +341,12 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         }
         try {
             if( mode == 'create' ) {
-                entity._schemaname = schemaName;
+                if( entitySchemaName !=null ) {
+                    entity._schemaname = entitySchemaName;
+                }
+                else {
+                    entity._schemaname = schemaName;
+                }
                 if ( allowBeforeEvent ) beforeSave("create");
                 entity = getPersistenceService().create( entity );
             }
@@ -339,7 +356,12 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
                 def oldEntity = entity;
                 try {
                     entity = entity.data(); 
-                    entity._schemaname = schemaName;
+                    if( entitySchemaName !=null ) {
+                        entity._schemaname = entitySchemaName;
+                    }
+                    else {
+                        entity._schemaname = schemaName;
+                    }
                     if ( allowBeforeEvent ) beforeSave("update");
                     getPersistenceService().update( entity );
                     loadData();
@@ -386,12 +408,17 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         }
         
         try {
-            if ( hasCallerMethod('refresh', callbackListHandler)) { 
-                callbackListHandler.refresh(); 
-            } else if ( hasCallerMethod('refresh')) { 
-                caller.refresh();
+            def refreshMethodName = getInvokerProperty('callerRefreshMethod', true); 
+            if ( !refreshMethodName ) refreshMethodName = 'refresh'; 
+            
+            if ( hasCallerMethod( refreshMethodName, callbackListHandler)) { 
+                callbackListHandler.metaClass.invokeMethod( callbackListHandler, refreshMethodName, [] as Object[] );
+            } 
+            else if ( hasCallerMethod( refreshMethodName )) { 
+                caller.metaClass.invokeMethod( caller, refreshMethodName, [] as Object[] );
             }
-        } catch(Throwable t) {
+        } 
+        catch(Throwable t) {
             t.printStackTrace(); 
         }
         
@@ -438,10 +465,7 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         if ( hasCallerMethod('moveBackRecord', handler)) {
             handler.moveBackRecord(); 
             
-            reloadEntity();
-            sections?.each {
-                try { it.controller.codeBean.reload(); }catch(e){;}
-            }        
+            reloadEntityFromNavigator();
         }         
     }
 
@@ -454,11 +478,26 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
         if ( hasCallerMethod('moveNextRecord', handler)) {
             handler.moveNextRecord(); 
 
-            reloadEntity();
-            sections?.each {
-                try { it.controller.codeBean.reload(); }catch(e){;}
-            }
+            reloadEntityFromNavigator();
         }
+    }
+    
+    void reloadEntityFromNavigator() {
+        def selitem = null; 
+        if ( hasCallerProperty('selectedItem')) { 
+            selitem = caller.selectedItem; 
+        }
+        if ( !selitem ) return; 
+        
+        entity = selitem; 
+        reloadEntity(); 
+        
+        sections?.each {
+            try { 
+                it.controller.codeBean.reload(); 
+            } 
+            catch(Throwable t){;}
+        }        
     }
     
     void reload() {
@@ -466,24 +505,34 @@ public class CrudFormModel extends AbstractCrudModel implements SubItemListener 
     }
     
     void loadData() {
-        entity._schemaname = schemaName;
+        loadData( entity ); 
+    }
+    
+    void loadData( param ) {
+        param._schemaname = schemaName;
         entity = fetchEntityData();
-        itemHandlers.values().each {
-            it.reload();
+        itemHandlers.values().each { 
+            try {
+                it.reload(); 
+            } catch(Throwable t) {
+                MsgBox.err( t ); 
+            }
         }
-        binding?.refresh();
+        if ( binding ) {
+            binding.refresh();
+        }
     }
     
     def reloadEntity() { 
-        if ( hasCallerProperty('selectedItem')) { 
-            def selitem = caller.selectedItem; 
-            if ( !selitem ) return null; 
-            
-            entity = selitem; 
-        }
-        loadData();
+        return reloadEntity( entity ); 
+    }
+
+    def reloadEntity( param ) { 
+        loadData( param );
         afterOpen();
-        updateWindowProperties(); 
+        if ( subWindow ) {
+            subWindow.update(); 
+        }
     }
     
     /*************************************************************************

@@ -43,7 +43,7 @@ public class FormReportModel extends ReportModel {
     int status;
     Map headers;
     def task;
-    def txnid;
+    def _txnid;
     
     def printmode = "preview";  //preview or printer
     def mode = "query";
@@ -112,6 +112,22 @@ public class FormReportModel extends ReportModel {
         s = workunit?.info?.workunit_properties?.reportId;
         if( s != null ) return s;
         throw new Exception("Please specify a report id");
+    }
+    
+    //dynamic txnid
+    public void setTxnid( def t ) {
+        _txnid = t;
+    }
+    
+    public def getTxnid() {
+        String s = invoker.properties.txnid;
+        if( s==null ) {
+            s = workunit?.info?.workunit_properties?.txnid;
+        }
+        if( s == null ) {
+            return _txnid;
+        }
+        return ExpressionResolver.getInstance().evalString(s,caller);
     }
 
     final def getModel() { 

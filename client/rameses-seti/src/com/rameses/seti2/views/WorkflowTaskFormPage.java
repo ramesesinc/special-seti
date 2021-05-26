@@ -183,6 +183,7 @@ public class WorkflowTaskFormPage extends javax.swing.JPanel {
 
                     xActionBar1.setFormName("formName");
                     xActionBar1.setName("formActions"); // NOI18N
+                    xActionBar1.setVisibleWhen("#{ showFormActions }");
                     xActionBar1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 0, 0));
                     xActionBar1.setDynamic(true);
                     jToolBar1.add(xActionBar1);
@@ -200,7 +201,7 @@ public class WorkflowTaskFormPage extends javax.swing.JPanel {
 
                     btnPrint1.setCaption("");
                     btnPrint1.setName("changeAssignee"); // NOI18N
-                    btnPrint1.setVisibleWhen("");
+                    btnPrint1.setVisibleWhen("#{ canChangeAssignee == true }");
                     btnPrint1.setAccelerator("ctrl P");
                     btnPrint1.setAutoRefresh(false);
                     btnPrint1.setFocusable(false);

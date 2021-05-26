@@ -9,6 +9,7 @@
         import com.rameses.osiris2.client.*;
         import com.rameses.osiris2.common.*;
         import com.rameses.seti2.models.*;
+        import java.text.*;
         
         class DatePrompt {
 
@@ -26,6 +27,15 @@
                 if( includeTime ) {
                     hourList = (0..23).collect{ it.toString().padLeft(2, "0")  }
                     minList = (0..59).collect{ it.toString().padLeft(2, "0")  };
+                };
+        
+                if( date ) {
+                    def df2 = new SimpleDateFormat("HH:mm");
+                    def arr = df2.format(date).split(":");
+                    hour = arr[0];
+                    min = arr[1];
+                    def df = new SimpleDateFormat("yyyy-MM-dd");
+                    date = df.parse( df.format( date ));
                 }
             }
                 
