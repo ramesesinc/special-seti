@@ -4,7 +4,6 @@
  */
 package com.rameses.seti2.views;
 
-import com.rameses.rcp.common.PageListModel;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -32,7 +31,6 @@ public class WorkflowTaskListPage extends javax.swing.JPanel {
         
         btnFilter.setToolTipText("Filter Criteria");
         btnSelectColumn.setToolTipText("Select Columns");
-        sidebarpanel.setLayout(new SideBarLayout());
     }
     
     
@@ -146,8 +144,7 @@ public class WorkflowTaskListPage extends javax.swing.JPanel {
         jPanel7 = new javax.swing.JPanel();
         xActionTextField1 = new com.rameses.rcp.control.XActionTextField();
         xSubFormPanel1 = new com.rameses.rcp.control.XSubFormPanel();
-        jPanel4 = new javax.swing.JPanel();
-        sidebarpanel = new javax.swing.JPanel();
+        xSplitView1 = new com.rameses.rcp.control.XSplitView();
         jScrollPane1 = new javax.swing.JScrollPane();
         xList1 = new com.rameses.rcp.control.XList();
         jPanel6 = new javax.swing.JPanel();
@@ -313,7 +310,7 @@ public class WorkflowTaskListPage extends javax.swing.JPanel {
             xSubFormPanel1.setLayout(xSubFormPanel1Layout);
             xSubFormPanel1Layout.setHorizontalGroup(
                 xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGap(0, 283, Short.MAX_VALUE)
+                .addGap(0, 285, Short.MAX_VALUE)
             );
             xSubFormPanel1Layout.setVerticalGroup(
                 xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -328,35 +325,24 @@ public class WorkflowTaskListPage extends javax.swing.JPanel {
 
             add(jPanel2, java.awt.BorderLayout.NORTH);
 
-            jPanel4.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 5, 5, 5));
-            jPanel4.setLayout(new java.awt.BorderLayout());
-
-            com.rameses.rcp.control.border.XLineBorder xLineBorder1 = new com.rameses.rcp.control.border.XLineBorder();
-            xLineBorder1.setHideRight(true);
-            xLineBorder1.setLineColor(new java.awt.Color(180, 180, 180));
-            sidebarpanel.setBorder(xLineBorder1);
-            sidebarpanel.setPreferredSize(new java.awt.Dimension(250, 292));
-            sidebarpanel.setLayout(new java.awt.BorderLayout());
-
-            jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            xSplitView1.setDividerLocation(200);
+            xSplitView1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 2, 2, 2));
 
             xList1.setExpression("#{item.title}");
-            xList1.setFixedCellHeight(20);
             xList1.setHandler("nodeListHandler");
             xList1.setName("selectedNode"); // NOI18N
+            xList1.setFixedCellHeight(20);
             jScrollPane1.setViewportView(xList1);
 
-            sidebarpanel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-            jPanel4.add(sidebarpanel, java.awt.BorderLayout.WEST);
+            xSplitView1.add(jScrollPane1);
 
             jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(180, 180, 180)));
             jPanel6.setLayout(new java.awt.BorderLayout());
             jPanel6.add(listPanel1, java.awt.BorderLayout.CENTER);
 
-            jPanel4.add(jPanel6, java.awt.BorderLayout.CENTER);
+            xSplitView1.add(jPanel6);
 
-            add(jPanel4, java.awt.BorderLayout.CENTER);
+            add(xSplitView1, java.awt.BorderLayout.CENTER);
         }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.rameses.rcp.control.XButton btnCancel1;
@@ -369,7 +355,6 @@ public class WorkflowTaskListPage extends javax.swing.JPanel {
     private com.rameses.rcp.control.XButton btnSelectColumn;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
@@ -377,13 +362,13 @@ public class WorkflowTaskListPage extends javax.swing.JPanel {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar3;
     private com.rameses.seti2.components.ListPanel listPanel1;
-    private javax.swing.JPanel sidebarpanel;
     private com.rameses.rcp.control.XActionBar xActionBar1;
     private com.rameses.rcp.control.XActionTextField xActionTextField1;
     private com.rameses.rcp.control.XButton xButton1;
     private com.rameses.rcp.control.XButton xButton2;
     private com.rameses.rcp.control.XLabel xLabel1;
     private com.rameses.rcp.control.XList xList1;
+    private com.rameses.rcp.control.XSplitView xSplitView1;
     private com.rameses.rcp.control.XSubFormPanel xSubFormPanel1;
     // End of variables declaration//GEN-END:variables
 }
