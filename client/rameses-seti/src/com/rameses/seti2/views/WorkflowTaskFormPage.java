@@ -201,7 +201,7 @@ public class WorkflowTaskFormPage extends javax.swing.JPanel {
 
                     btnPrint1.setCaption("");
                     btnPrint1.setName("changeAssignee"); // NOI18N
-                    btnPrint1.setVisibleWhen("");
+                    btnPrint1.setVisibleWhen("#{ canChangeAssignee == true }");
                     btnPrint1.setAccelerator("ctrl P");
                     btnPrint1.setAutoRefresh(false);
                     btnPrint1.setFocusable(false);
