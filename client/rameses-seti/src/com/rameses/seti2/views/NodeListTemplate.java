@@ -37,7 +37,7 @@ public class NodeListTemplate extends javax.swing.JPanel {
     
     // <editor-fold defaultstate="collapsed" desc=" SideBarLayout ">
     
-    private class SideBarLayout implements LayoutManager, LayoutManager2 
+    public class SideBarLayout implements LayoutManager, LayoutManager2 
     {
         public void addLayoutComponent(String name, Component comp) {}
         public void removeLayoutComponent(Component comp) {}
@@ -319,7 +319,7 @@ public class NodeListTemplate extends javax.swing.JPanel {
         xSubFormPanel1.setLayout(xSubFormPanel1Layout);
         xSubFormPanel1Layout.setHorizontalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 162, Short.MAX_VALUE)
+            .addGap(0, 226, Short.MAX_VALUE)
         );
         xSubFormPanel1Layout.setVerticalGroup(
             xSubFormPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

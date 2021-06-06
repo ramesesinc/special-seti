@@ -611,6 +611,9 @@ public class CrudListModel extends AbstractCrudModel {
         fetchList : { 
             _nodeList = null;
             return getNodeList();
+        },
+        onselect: { o-> 
+            listHandler.doSearch();
         }
     ] as ListPaneModel 
 
@@ -646,7 +649,6 @@ public class CrudListModel extends AbstractCrudModel {
     void setSelectedNode(def n) {
         _selectedNode = n;
         query.put("node", n);
-        listHandler.doSearch();
     }
     
     def getSelectedNode() {
